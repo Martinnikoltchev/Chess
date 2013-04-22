@@ -18,13 +18,9 @@ public class Knight extends GamePiece implements Cloneable{
     public Knight(Player p, int x, int y){
         super(p, x, y);
         if(p.location==1)
-            try {
-                iPiece = ImageIO.read(new File("BlackKnight.png"));
-            } catch (IOException ex) {System.out.println("Fail");}
+                iconName = "BlackKnight.png";
         else
-            try {
-                iPiece = ImageIO.read(new File("WhiteKnight.png"));
-            }catch (IOException ex) {System.out.println("Fail");}
+                iconName = "WhiteKnight.png";
         icon = "Kn";
     }
     

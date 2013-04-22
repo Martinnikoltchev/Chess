@@ -6,11 +6,7 @@ package chess;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -19,6 +15,7 @@ import java.util.logging.Logger;
 public class Player implements Cloneable {
     ArrayList<GamePiece> pieces = new ArrayList<GamePiece>();
     int location;
+    int otherLoc;
     Color col;
     boolean playing;
     int rectSize;
@@ -26,9 +23,8 @@ public class Player implements Cloneable {
     int hitLocs[][] = new int[8][8];
     boolean kingMoved = false;
     boolean check = false;
-    Player otherPlayer = null;
     Player pBackUp;
-    Player oPBackUp;
+    Chess main;
     /*
     ArrayList pBack = new ArrayList<GamePiece>();
     ArrayList oBack = new ArrayList<GamePiece>();
@@ -38,12 +34,13 @@ public class Player implements Cloneable {
     ArrayList<Originator.Memento> or2List = new ArrayList<Originator.Memento>();
     */
     
-    public Player(int l, int h, Player p){
-        rectSize = h;
+    public Player(int l, Chess c){
+        main = c;
+        rectSize = c.rectSize;
         playing = false;
         location = l;
+        otherLoc = (location-1)*(-1);
         direction = (l*2)-1;
-        otherPlayer = p;
         if(l==0){
             col = Color.white;
         }
@@ -57,18 +54,24 @@ public class Player implements Cloneable {
         if(pieces.size()<=0){
             for(int i = 0; i < 8; i++){
                 pieces.add(new Pawn(this, i, 1 + location*5));
+                pieces.get(pieces.size()-1).setIcon();
             }
             for(int i = 0; i < 2; i++){
                 pieces.add(new Rook(this, i*7, location*7));
+                pieces.get(pieces.size()-1).setIcon();
             }
             for(int i = 0; i < 2; i++){
                 pieces.add(new Knight(this, 1+ i*5, location*7));
+                pieces.get(pieces.size()-1).setIcon();
             }
             for(int i = 0; i < 2; i++){
                 pieces.add(new Bishop(this, 2+i*3, location*7));
+                pieces.get(pieces.size()-1).setIcon();
             }
             pieces.add(new Queen(this, 4, location*7));
+            pieces.get(pieces.size()-1).setIcon();
             pieces.add(new King(this, 3, location*7));
+            pieces.get(pieces.size()-1).setIcon();
         }
     }
     
@@ -93,33 +96,27 @@ public class Player implements Cloneable {
         }
         return p;
     }
-
-    public void setOtherPlayer(Player p){
-        otherPlayer = p;
-        oPBackUp = p;
-    }
     public Player getOtherPlayer(){
-        return otherPlayer;
+        return main.players[otherLoc];
     }
     
     public boolean pieceHere(int r, int c){
         if(findPiece(r,c)==null)
-            if(otherPlayer.findPiece(r, c)==null)
+            if(getOtherPlayer().findPiece(r, c)==null)
                 return false;
         return true;
     }
     public boolean check(){
-        for(int i = 0; i < otherPlayer.pieces.size();i++){
+        for(int i = 0; i < getOtherPlayer().pieces.size();i++){
             for(int r = 0; r < 8;r++){
                 for(int c = 0; c < 8; c++){
-                    if(otherPlayer.pieces.get(i).movableLocs[r][c]!=null&&findPiece(r,c).equals(getKing()))
+                    if(getOtherPlayer().pieces.get(i).movableLocs[r][c]!=null&&findPiece(r,c).equals(getKing()))
                     {
-                        otherPlayer.check = true;
+                        getOtherPlayer().check = true;
                         return true;
                     }
                 }
             }
-            
         }
         return false;
     }
@@ -145,30 +142,6 @@ public class Player implements Cloneable {
         return null;
     }
     
-    protected void undoMove(){
-        if(oPBackUp==null)
-            setBackUp();
-        pieces = pBackUp.clone().pieces;
-        otherPlayer.pieces = oPBackUp.clone().pieces;
-        System.out.println(pieces.get(0).equals(pBackUp.clone().pieces.get(0)));
-        /*
-        pieces = new ArrayList<GamePiece>(orList.get(0).getSavedState().pieces);
-        otherPlayer.pieces = new ArrayList<GamePiece>(or2List.get(0).getSavedState().pieces);
-        */
-    }
-    
-    protected void setBackUp(){
-        pBackUp = this;
-        oPBackUp = otherPlayer;
-        /*orList.clear();
-        or2List.clear();
-        or.set(this.clone());
-        or2.set(otherPlayer.clone());
-        orList.add(or.saveToMemento());
-        or2List.add(or2.saveToMemento());
-        * */
-    }
-    
     protected void makeHits(){
         for(int i = 0; i < pieces.size(); i++){
             for(int r = 0; r < 8; r++){
@@ -185,16 +158,9 @@ public class Player implements Cloneable {
         try {
             clone = (Player) super.clone();
             clone.pieces = new ArrayList<GamePiece>();
-            ArrayList<GamePiece> temp = pieces;
             for(int i = 0; i < pieces.size(); i++){
                 clone.pieces.add(pieces.get(i).clone(clone));
-            }
-            
-            clone.otherPlayer.otherPlayer = this;
-            clone.otherPlayer = new Player(otherPlayer.location, otherPlayer.rectSize, clone);
-            clone.otherPlayer.pieces = new ArrayList<GamePiece>();
-            for(int i = 0; i < otherPlayer.pieces.size(); i++){
-                clone.otherPlayer.pieces.add(otherPlayer.pieces.get(i).clone(clone.otherPlayer));
+                clone.pieces.get(i).iPiece = pieces.get(i).iPiece;
             }
         } catch (Exception ex) {System.out.println("ERROR");}
         return clone;

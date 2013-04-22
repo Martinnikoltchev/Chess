@@ -20,13 +20,9 @@ public class Rook extends GamePiece implements Cloneable{
     public Rook(Player p, int x, int y){
         super(p, x ,y);
         if(p.location==1)
-            try {
-                iPiece = ImageIO.read(new File("BlackRook.png"));
-            } catch (IOException ex) {System.out.println("Fail");}
+                iconName = "BlackRook.png";
         else
-            try {
-                iPiece = ImageIO.read(new File("WhiteRook.png"));
-            }catch (IOException ex) {System.out.println("Fail");}
+                iconName = "WhiteRook.png";
         icon = "R";
     }
     

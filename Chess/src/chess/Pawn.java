@@ -18,13 +18,9 @@ public class Pawn extends GamePiece implements Cloneable{
     public Pawn(Player p, int x, int y){
         super(p, x, y);
         if(p.location==1)
-            try {
-                iPiece = ImageIO.read(new File("BlackPawn.png"));
-            } catch (IOException ex) {System.out.println("Fail");}
+                iconName = "BlackPawn.png";
         else
-            try {
-                iPiece = ImageIO.read(new File("WhitePawn.png"));
-            }catch (IOException ex) {System.out.println("Fail");}
+                iconName = "WhitePawn.png";
         icon = "P";
     }
     
@@ -36,17 +32,17 @@ public class Pawn extends GamePiece implements Cloneable{
             dir/=yDiff;
         if(yDiff==2 && xDiff==0 && y==1+p.location*5)
             if(dir==p.direction){
-                if(p.otherPlayer.findPiece(r, c)!=null)
+                if(p.getOtherPlayer().findPiece(r, c)!=null)
                     return false;
                 return true;
             }
         if(yDiff==1 && xDiff==0)
             if(dir==p.direction){
-                if(p.otherPlayer.findPiece(r, c)!=null)
+                if(p.getOtherPlayer().findPiece(r, c)!=null)
                     return false;
                 return true;
             }
-        if((r==x-1||r==x+1)&&c==y-p.direction&&p.otherPlayer.findPiece(r,c)!=null)
+        if((r==x-1||r==x+1)&&c==y-p.direction&&p.getOtherPlayer().findPiece(r,c)!=null)
             return true;
         return false;   
     }

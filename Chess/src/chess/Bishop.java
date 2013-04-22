@@ -18,13 +18,9 @@ public class Bishop extends GamePiece implements Cloneable{
     public Bishop(Player p, int x, int y){
         super(p, x, y);
         if(p.location==1)
-            try {
-                iPiece = ImageIO.read(new File("BlackBishop.png"));
-            } catch (IOException ex) {System.out.println("Fail");}
+                iconName = "BlackBishop.png";
         else
-            try {
-                iPiece = ImageIO.read(new File("WhiteBishop.png"));
-            }catch (IOException ex) {System.out.println("Fail");}
+                iconName = "WhiteBishop.png";
         icon = "B";
     }
 

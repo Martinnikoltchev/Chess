@@ -18,13 +18,9 @@ public class Queen extends GamePiece implements Cloneable{
     public Queen(Player p, int x, int y){
         super(p, x, y);
         if(p.location==1)
-            try {
-                iPiece = ImageIO.read(new File("BlackQueen.png"));
-            } catch (IOException ex) {System.out.println("Fail");}
+                iconName = "BlackQueen.png";
         else
-            try {
-                iPiece = ImageIO.read(new File("WhiteQueen.png"));
-            }catch (IOException ex) {System.out.println("Fail");}
+                iconName = "WhiteQueen.png";
         icon = "Q";
     }
     

@@ -17,13 +17,9 @@ public class King extends GamePiece implements Cloneable{
     public King(Player p, int x, int y){
         super(p, x, y);
         if(p.location==1)
-            try {
-                iPiece = ImageIO.read(new File("BlackKing.png"));
-            } catch (IOException ex) {System.out.println("Fail");}
+                iconName = "BlackKing.png";
         else
-            try {
-                iPiece = ImageIO.read(new File("WhiteKing.png"));
-            }catch (IOException ex) {System.out.println("Fail");}
+                iconName = "WhiteKing.png";
         icon = "K";
     }
     

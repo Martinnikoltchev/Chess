@@ -28,6 +28,7 @@ public class Chess extends Applet implements MouseListener{
     Player curPlayer;
     Rectangle[][] board = new Rectangle[8][8];
     Player[] players;
+    Player[] backUps;
     int vsAI;
     public void init(){
         width = 600;
@@ -57,16 +58,15 @@ public class Chess extends Applet implements MouseListener{
     }
 
     private void startGame() {
+        backUps = new Player[2];
         rectSize = height/8;
         vsAI = new JOptionPane().showConfirmDialog(null, "Would you like to play against an AI?");
 
-        players[0] = new Player(0, rectSize, players[1]);
+        players[0] = new Player(0, this);
         if(vsAI==1)
-            players[1] = new Player(1, rectSize, players[0]);
+            players[1] = new Player(1, this);
         else
-            players[1] = new AI(1, rectSize, players[0]);
-        players[0].otherPlayer = players[1];
-        backUpPlayers();
+            players[1] = new AI(1, this);
         nextTurn();
         for(int r = 0; r <8; r++){
             for(int c = 0; c<8; c++){
@@ -125,11 +125,7 @@ public class Chess extends Applet implements MouseListener{
                 ((AI)players[1]).takeTurn();
                 nextTurn();
             }
-            backUpPlayers();
-    }
-    private void backUpPlayers(){
-        players[0].setBackUp();
-        players[1].setBackUp();
+            backUpMove();
     }
     private void movables(){
         for(int i = 0; i < 2; i++){
@@ -195,6 +191,19 @@ public class Chess extends Applet implements MouseListener{
     @Override
     public void mouseExited(MouseEvent e) {
         
+    }
+    
+    public void undoMove(){
+        if(backUps[0]==null)
+            backUpMove();
+        players[0] = backUps[0].clone();
+        players[1] = backUps[1].clone();
+    }
+    
+    public void backUpMove(){
+        backUps = new Player[2];
+        backUps[0] = players[0];
+        backUps[1] = players[1];
     }
     
 }

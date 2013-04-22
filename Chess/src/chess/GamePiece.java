@@ -9,8 +9,11 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -23,6 +26,7 @@ public abstract class GamePiece implements Cloneable{
     String icon;
     Player p;
     int offSet;
+    String iconName;
     Rectangle[][] movableLocs;
     BufferedImage iPiece = null;
     public GamePiece(Player pl, int x, int y){
@@ -75,12 +79,18 @@ public abstract class GamePiece implements Cloneable{
         movableLocs[x][y] = new Rectangle(x*p.rectSize, y*p.rectSize, p.rectSize, p.rectSize);
     }
     public void movePiece(int r,int c){
-        GamePiece piece = p.otherPlayer.findPiece(r, c);
+        GamePiece piece = p.getOtherPlayer().findPiece(r, c);
         if(piece!=null)
-            p.otherPlayer.removePiece(piece);
+            p.getOtherPlayer().removePiece(piece);
         x = r;
         y = c;
         p.check = false;
+    }
+    
+    protected void setIcon(){
+        try {
+                iPiece = ImageIO.read(new File(iconName));
+            } catch (IOException ex) {System.out.println("Fail");}
     }
     
     public abstract GamePiece clone(Player p);

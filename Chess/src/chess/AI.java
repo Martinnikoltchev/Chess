@@ -16,8 +16,8 @@ public class AI extends Player{
     int DEFSCALER = 1;
     
     Random rand = new Random(System.currentTimeMillis());
-    public AI(int l, int h, Player p){
-    super(l,h, p);
+    public AI(int l, Chess c){
+    super(l,c);
     }
     
     public void takeTurn(){  //(0,7) = bottom left corner
@@ -25,6 +25,8 @@ public class AI extends Player{
             pieces.get(i).makeMovables(pieces.get(i));
         }
         getMove();
+        main.backUpMove();
+        main.paintAll(main.getGraphics());
     }
     
     private void getMove(){
@@ -61,7 +63,7 @@ public class AI extends Player{
     public int testState(GamePiece piece, int r, int c){
         piece.movePiece(r, c);
         int val = quantifyGameState();
-        undoMove();
+        main.undoMove();
         return val;
     }
     
